@@ -23,7 +23,6 @@ set path=.
 vnoremap <C-c> "*y
 noremap <f2> :Files<CR>
 noremap <f3> :UndotreeToggle<CR>
-noremap <f4> :Note
 
 call plug#begin('~/.vim/plugged')
     Plug 'junegunn/vim-easy-align'
@@ -34,12 +33,13 @@ call plug#begin('~/.vim/plugged')
     Plug 'mbbill/undotree'
     Plug 'godlygeek/tabular'
     Plug 'https://github.com/tpope/vim-commentary' "Uncomment and comment
+    Plug 'https://github.com/xolox/vim-misc'
     Plug 'https://github.com/xolox/vim-notes'
 "   Plug 'vim-syntastic/syntastic'
 call plug#end()
 
-colorscheme gruvbox 
-set background=dark 
+colorscheme gruvbox
+set background=dark
 " Enable the list of buffers
 let g:airline#extensions#tabline#enabled = 1
 
