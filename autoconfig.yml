@@ -71,7 +71,11 @@ settings:
   hints.chars:
     global: asdfghjklweio
   hints.dictionary:
-    global: /usr/share/dict/words
+    global: C:\Users\ezfrios\AppData\Roaming\qutebrowser\config\words
+  hints.min_chars:
+    global: 1
+  hints.mode:
+    global: word
   tabs.position:
     global: top
   url.default_page:
