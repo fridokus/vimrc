@@ -35,6 +35,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'https://github.com/tpope/vim-commentary' "Uncomment and comment
     Plug 'https://github.com/xolox/vim-misc'
     Plug 'https://github.com/xolox/vim-notes'
+    Plug 'garbas/vim-snipmate'
+    Plug 'honza/vim-snippets'
 "   Plug 'vim-syntastic/syntastic'
 call plug#end()
 
