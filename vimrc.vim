@@ -35,10 +35,13 @@ call plug#begin('~/.vim/plugged')
     Plug 'https://github.com/tpope/vim-commentary' "Uncomment and comment
     Plug 'https://github.com/xolox/vim-misc'
     Plug 'https://github.com/xolox/vim-notes'
+    Plug 'MarcWeber/vim-addon-mw-utils'
+    Plug 'tomtom/tlib_vim'
+    Plug 'garbas/vim-snipmate'
+    Plug 'honza/vim-snippets'
 "   Plug 'vim-syntastic/syntastic'
 call plug#end()
 
-colorscheme gruvbox
 set background=dark
 " Enable the list of buffers
 let g:airline#extensions#tabline#enabled = 1
@@ -57,3 +60,5 @@ nmap <leader>d :bprevious<CR>
 nmap <leader>q :bp <BAR> bd #<CR>
 
 nmap <leader>z 8G0xAImprovement<ESC>ZZ
+let g:gruvbox_contrast_dark = 'hard'
+colorscheme gruvbox
