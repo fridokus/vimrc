@@ -42,7 +42,6 @@ call plug#begin('~/.vim/plugged')
 "   Plug 'vim-syntastic/syntastic'
 call plug#end()
 
-colorscheme gruvbox
 set background=dark
 " Enable the list of buffers
 let g:airline#extensions#tabline#enabled = 1
@@ -61,3 +60,5 @@ nmap <leader>d :bprevious<CR>
 nmap <leader>q :bp <BAR> bd #<CR>
 
 nmap <leader>z 8G0xAImprovement<ESC>ZZ
+let g:gruvbox_contrast_dark = 'hard'
+colorscheme gruvbox
