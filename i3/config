@@ -28,8 +28,8 @@ font pango:monospace 8
 # clear in small sizes. However, its unicode glyph coverage is limited, the old
 # X core fonts rendering does not support right-to-left and this being a bitmap
 # font, it doesn’t scale on retina/hidpi displays.
-workspace 1 output eDP-1
-workspace 7 output DP-1
+workspace 1 output DP-1
+workspace 7 output eDP-1
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -39,7 +39,7 @@ bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+i exec qutebrowser
 
 # kill focused window
-bindsym $mod+Shift+f kill
+bindsym $mod+Shift+v kill
 
 # start dmenu (a program launcher)
 bindsym $mod+d exec dmenu_run
