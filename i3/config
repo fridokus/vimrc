@@ -11,6 +11,7 @@
 
 exec --no-startup-id setxkbmap -layout us,se -option grp:shifts_toggle -option ctrl:nocaps
 exec --no-startup-id redshift-gtk
+exec --no-startup-id feh --bg-fill --randomize ~/Dropbox/wallpapers/*
 
 set $mod Mod1
 
@@ -141,7 +142,7 @@ bindsym XF86AudioMute exec --no-startup-id "amixer set Master toggle; amixer set
 bindsym XF86MonBrightnessUp exec --no-startup-id "light -A 5; pkill -RTMIN+2 i3blocks"
 bindsym XF86MonBrightnessDown exec --no-startup-id "light -U 5; pkill -RTMIN+2 i3blocks"
 
-bindsym $mod+Shift+period exec "i3lock -c 000000"
+bindsym $mod+Shift+period exec "/home/ezfrios/git/vimrc/lock-screen.sh"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
