@@ -143,6 +143,7 @@ bindsym XF86MonBrightnessUp exec --no-startup-id "light -A 5; pkill -RTMIN+2 i3b
 bindsym XF86MonBrightnessDown exec --no-startup-id "light -U 5; pkill -RTMIN+2 i3blocks"
 
 bindsym $mod+Shift+period exec "/home/ezfrios/git/vimrc/lock-screen.sh"
+bindsym $mod+Shift+comma exec "/home/ezfrios/git/vimrc/lock-screen.sh"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
