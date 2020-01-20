@@ -1,0 +1,5 @@
+#!/bin/bash
+n=$(cat /sys/class/backlight/intel_backlight/actual_brightness)
+d=$(cat /sys/class/backlight/intel_backlight/max_brightness)
+pct=$(bc <<<"scale=2; $n/$d")
+echo $pct

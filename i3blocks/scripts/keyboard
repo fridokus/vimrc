@@ -1,0 +1,10 @@
+#!/bin/bash
+keyboard=$(xset -q | grep -A 0 'LED' | cut -c59-67)
+#echo "<span font_desc='FontAwesome'>\xf11c</span>"
+if [ $keyboard == 00000000 ]; then
+  msg="1"
+else
+  msg="2"
+fi
+echo $msg
+echo $msg
