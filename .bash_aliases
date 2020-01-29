@@ -5,3 +5,13 @@ alias gp='(git push origin HEAD:refs/for/master)'
 alias v='vim'
 alias g='git'
 alias which='alias | /usr/bin/which --tty-only --read-alias --show-dot --show-tilde'
+
+alias c.='cd ..'
+alias c..='cd ../..'
+alias c...='cd ../../..'
+alias c....='cd ../../../..'
+
+alias c1='cd ..'
+alias c2='cd ../..'
+alias c3='cd ../../..'
+alias c4='cd ../../../..'
