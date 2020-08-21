@@ -144,6 +144,9 @@ bindsym XF86MonBrightnessDown exec --no-startup-id "xbacklight -dec 5; pkill -RT
 bindsym $mod+Shift+period exec "/home/ezfrios/git/vimrc/lock-screen.sh"
 bindsym $mod+Shift+comma exec "/home/ezfrios/git/vimrc/lock-screen.sh"
 
+# Microsoft teams notifications
+for_window [class="Microsoft Teams - Preview" title="Microsoft Teams Notification"] floating enable
+
 # resize window (you can also use the mouse for that)
 mode "resize" {
         # These bindings trigger as soon as you enter the resize mode
