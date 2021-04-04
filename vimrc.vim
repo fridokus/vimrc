@@ -37,8 +37,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'https://github.com/xolox/vim-notes'
     Plug 'MarcWeber/vim-addon-mw-utils'
     Plug 'tomtom/tlib_vim'
-    Plug 'garbas/vim-snipmate'
-    Plug 'honza/vim-snippets'
 "   Plug 'vim-syntastic/syntastic'
 call plug#end()
 
