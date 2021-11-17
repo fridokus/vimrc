@@ -8,7 +8,6 @@ set clipboard=unnamedplus
 set hlsearch
 filetype plugin indent on
 set undofile
-set number
 set hidden
 set expandtab
 set tabstop=4
