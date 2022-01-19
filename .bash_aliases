@@ -5,7 +5,6 @@ alias gp='(git push origin HEAD:refs/for/master)'
 alias gpr='git pull --rebase'
 alias v='vim'
 alias g='git'
-alias which='alias | /usr/bin/which --tty-only --read-alias --show-dot --show-tilde'
 alias la='ls -ltrha'
 
 alias c.='cd ..'

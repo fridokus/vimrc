@@ -1,0 +1,9 @@
+# ~/.local/share/applications/qutebrowser.desktop
+[Desktop Entry]
+Type=Application
+Name=qutebrowser
+Comment=qutebrowser minimal web browser
+Terminal=false
+Exec=qutebrowser %U
+Categories=Network;WebBrowser
+MimeType=x-scheme-handler/about;x-scheme-handler/https;x-scheme-handler/http;text/html;
