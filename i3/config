@@ -9,7 +9,7 @@
 #
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 
-exec --no-startup-id xrandr --output DP-2-1-8 --auto --left-of HDMI-1 --output eDP-1 --auto --right-of HDMI-1
+exec --no-startup-id xrandr --output DP-2-1-8 --auto --right-of eDP-1 --output DP-2-1-1 --auto --right-of DP-2-1-8
 exec --no-startup-id setxkbmap -layout us,se -option grp:shifts_toggle -option ctrl:nocaps
 exec --no-startup-id redshift-gtk
 exec --no-startup-id /home/ezfrios/git/vimrc/set-background.sh
