@@ -51,11 +51,11 @@ interval=30
 
 [wifi]
 label=wifi
-instance=wlo1
+instance=wlp0s20f3
 interval=10
 
 [bandwidth]
-instance=wlo1
+instance=wlp0s20f3
 interval=5
 min_width=IN 999K OUT 999K
 
