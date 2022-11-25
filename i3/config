@@ -152,6 +152,7 @@ bindsym $mod+Shift+comma exec "/home/ezfrios/git/vimrc/lock-screen.sh"
 for_window [class="Microsoft Teams - Preview" title="Microsoft Teams Notification"] floating enable
 for_window [class="PanGPUI"] move position mouse
 for_window [class="PanGPUI"] floating enable
+for_window [class="PanGPUI"] floating enable
 
 # resize window (you can also use the mouse for that)
 mode "resize" {

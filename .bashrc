@@ -122,3 +122,5 @@ alias fixkb='setxkbmap -layout us,se -option grp:shifts_toggle -option ctrl:noca
 
 alias gp='globalprotect launch-ui'
 alias gca='git commit --amend'
+alias fixdisplay='xrandr --output DP-2-1-8 --auto --right-of eDP-1 --output DP-2-1-1 --auto --right-of DP-2-1-8'
+alias au='autorandr horizontal'
