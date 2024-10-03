@@ -30,13 +30,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' } "Fuzzy file finder
     Plug 'junegunn/fzf.vim'
     Plug 'mbbill/undotree'
-    Plug 'godlygeek/tabular'
     Plug 'https://github.com/tpope/vim-commentary' "Uncomment and comment
     Plug 'https://github.com/xolox/vim-misc'
-    Plug 'https://github.com/xolox/vim-notes'
-    Plug 'MarcWeber/vim-addon-mw-utils'
-    Plug 'tomtom/tlib_vim'
-"   Plug 'vim-syntastic/syntastic'
 call plug#end()
 
 set background=dark
@@ -56,6 +51,7 @@ nmap <leader>d :bprevious<CR>
 " This replicates the idea of closing a tab
 nmap <leader>q :bp <BAR> bd #<CR>
 
-nmap <leader>z 8G0xAImprovement<ESC>ZZ
 let g:gruvbox_contrast_dark = 'hard'
+let $FZF_DEFAULT_COMMAND = 'find . \( -path "*/venv" -o -path "*/.venv" -o -path "*/__pycache__" -o -name ".*" ! -name "." ! -name ".." \) -prune -o -type f -print'
+autocmd FileType robot setlocal commentstring=#\ %s
 colorscheme gruvbox
