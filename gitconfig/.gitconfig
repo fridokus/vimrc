@@ -13,3 +13,7 @@
     email = raxomukus@gmail.com
     name = fridokus
     editor = vim
+[push]
+    autoSetupRemote = true
+    autoSetupRemote = true
+    default = current
