@@ -148,6 +148,7 @@ bindsym XF86MonBrightnessDown exec --no-startup-id "brightnessctl set 5%-"
 
 bindsym $mod+Shift+period exec "/home/ezfrios/git/vimrc/lock-screen.sh"
 bindsym $mod+Shift+comma exec "/home/ezfrios/git/vimrc/lock-screen.sh"
+bindsym Control+period exec --no-startup-id emote
 
 # Microsoft teams notifications
 for_window [class="Microsoft Teams - Preview" title="Microsoft Teams Notification"] floating enable
