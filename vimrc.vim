@@ -32,6 +32,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'mbbill/undotree'
     Plug 'https://github.com/tpope/vim-commentary' "Uncomment and comment
     Plug 'https://github.com/xolox/vim-misc'
+    Plug 'https://github.com/github/copilot.vim'
 call plug#end()
 
 set background=dark
@@ -50,6 +51,8 @@ nmap <leader>d :bprevious<CR>
 " Close the current buffer and move to the previous one
 " This replicates the idea of closing a tab
 nmap <leader>q :bp <BAR> bd #<CR>
+
+let g:copilot_auth_provider_url = 'https://ericsson.ghe.com'
 
 let g:gruvbox_contrast_dark = 'hard'
 let $FZF_DEFAULT_COMMAND = 'find . \( -path "*/venv" -o -path "*/.venv" -o -path "*/__pycache__" -o -name ".*" ! -name "." ! -name ".." \) -prune -o -type f -print'
