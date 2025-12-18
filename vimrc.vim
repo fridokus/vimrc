@@ -52,7 +52,7 @@ nmap <leader>d :bprevious<CR>
 " This replicates the idea of closing a tab
 nmap <leader>q :bp <BAR> bd #<CR>
 
-let g:copilot_auth_provider_url = 'https://ericsson.ghe.com'
+" let g:copilot_auth_provider_url = 'https://ericsson.ghe.com'
 
 let g:gruvbox_contrast_dark = 'hard'
 let $FZF_DEFAULT_COMMAND = 'find . \( -path "*/venv" -o -path "*/.venv" -o -path "*/__pycache__" -o -name ".*" ! -name "." ! -name ".." \) -prune -o -type f -print'
