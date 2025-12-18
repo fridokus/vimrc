@@ -16,10 +16,7 @@ set backspace=2 " make backspace work like most other programs
 nnoremap <space> :w<CR>
 set tw=0
 nnoremap <esc> :noh<return><esc>
-nnoremap <esc>^[ <esc>^[
-set path=.
-"set autoindent
-vnoremap <C-c> "*y
+set path=.,**
 noremap <f2> :Files<CR>
 noremap <f3> :UndotreeToggle<CR>
 
@@ -31,7 +28,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/fzf.vim'
     Plug 'mbbill/undotree'
     Plug 'https://github.com/tpope/vim-commentary' "Uncomment and comment
-    Plug 'https://github.com/xolox/vim-misc'
     Plug 'https://github.com/github/copilot.vim'
 call plug#end()
 
@@ -53,7 +49,6 @@ nmap <leader>d :bprevious<CR>
 nmap <leader>q :bp <BAR> bd #<CR>
 
 " let g:copilot_auth_provider_url = 'https://ericsson.ghe.com'
-
 let g:gruvbox_contrast_dark = 'hard'
 let $FZF_DEFAULT_COMMAND = 'find . \( -path "*/venv" -o -path "*/.venv" -o -path "*/__pycache__" -o -name ".*" ! -name "." ! -name ".." \) -prune -o -type f -print'
 autocmd FileType robot setlocal commentstring=#\ %s
