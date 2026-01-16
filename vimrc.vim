@@ -15,7 +15,7 @@ set shiftwidth=4
 set backspace=2 " make backspace work like most other programs
 nnoremap <space> :w<CR>
 set tw=0
-nnoremap <esc> :noh<return><esc>
+nnoremap <silent> <C-L> :nohlsearch<CR><C-L>
 set path=.,**
 noremap <f2> :Files<CR>
 noremap <f3> :UndotreeToggle<CR>
