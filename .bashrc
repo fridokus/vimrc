@@ -124,3 +124,9 @@ alias gp='globalprotect launch-ui'
 alias gca='git commit --amend'
 alias fixdisplay='xrandr --output DP-2-1-8 --auto --right-of eDP-1 --output DP-2-1-1 --auto --right-of DP-2-1-8'
 alias au='autorandr horizontal'
+
+alias w='gcloud workstations ssh  --project=gcpsapperecndevenv01-7d5e   --cluster=cluster-pg  --config=config-pg-sec   --region=europe-north1   ws-clouddev-ezfrios'
+alias ws='gcloud workstations start --project=gcpsapperecndevenv01-7d5e --cluster=cluster-pg --config=config-pg-sec --region=europe-north1 ws-clouddev-ezfrios'
+alias gcloud='/home/ezfrios/tmp/google-cloud-sdk/bin/gcloud'
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+export PATH=$PATH:/home/ezfrios/tmp/google-cloud-sdk/bin
