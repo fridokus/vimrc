@@ -33,7 +33,7 @@ font pango:monospace 8
 # clear in small sizes. However, its unicode glyph coverage is limited, the old
 # X core fonts rendering does not support right-to-left and this being a bitmap
 # font, it doesn’t scale on retina/hidpi displays.
-workspace 1 output DP-2-1-8
+workspace 2 output DP-2-1-8
 workspace 7 output DP-2-1-1
 workspace 10 output eDP-1
 
