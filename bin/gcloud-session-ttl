@@ -1,0 +1,255 @@
+#!/usr/bin/env python3
+"""How much of the current `gcloud auth login` session is left, for tmux.
+
+Google Cloud session control expires the *login* after a fixed period (16h
+here), independently of the 1h access token. Once it passes, every refresh
+fails with "Reauthentication failed" until `gcloud auth login` is run again --
+so the number worth watching is the session, not the token.
+
+Nothing local records when the session started, so this reconstructs it:
+
+  * the refresh token minted by `gcloud auth login` stays put across the hourly
+    access-token refreshes, so a change of its fingerprint *is* a new login;
+  * the first time a fingerprint is seen, the login time is recovered from
+    gcloud's own command log ("Running [gcloud.auth.login]") and cached, so the
+    common path is one small sqlite read.
+
+Prints a tmux status fragment, or nothing at all when there is no user
+credential to talk about. Only ever handles a SHA-256 prefix of a token, never
+a token itself.
+
+    gcloud-session-ttl [--plain|--verbose]
+
+GCLOUD_SESSION_HOURS overrides the assumed session length.
+"""
+
+from __future__ import annotations
+
+import configparser
+import hashlib
+import json
+import os
+import re
+import sqlite3
+import sys
+import time
+from pathlib import Path
+
+GCLOUD = Path(os.environ.get("CLOUDSDK_CONFIG") or Path.home() / ".config" / "gcloud")
+STATE = Path.home() / ".cache" / "gcloud-session-ttl.json"
+SESSION = float(os.environ.get("GCLOUD_SESSION_HOURS") or 16) * 3600
+
+LOGIN_MARKER = "Running [gcloud.auth.login]"
+# The token response logged by the login itself, read for its timings alone.
+MINTED = re.compile(r"'expires_in': (\d+).*?'expires_at': ([0-9.]+)", re.S)
+
+WARN = 2 * 3600
+ALARM = 30 * 60
+# The status bar is black-on-green, so a healthy session is left unstyled and
+# only the states worth interrupting for get a block of colour.
+STYLES = {"warn": "bg=colour214,fg=black,bold", "alarm": "bg=red,fg=white,bold"}
+
+# A login that started the session we are looking at cannot be older than this,
+# and reading every log gcloud ever wrote is not worth a status bar.
+LOOKBACK = 48 * 3600
+BUDGET = 4000
+
+
+def active_account() -> str | None:
+    """The account gcloud would use, resolved the way gcloud resolves it."""
+    if os.environ.get("CLOUDSDK_CORE_ACCOUNT"):
+        return os.environ["CLOUDSDK_CORE_ACCOUNT"]
+    name = os.environ.get("CLOUDSDK_ACTIVE_CONFIG_NAME", "")
+    if not name:
+        try:
+            name = (GCLOUD / "active_config").read_text().strip()
+        except OSError:
+            name = ""
+    for config in dict.fromkeys([name or "default", "default"]):
+        parser = configparser.ConfigParser()
+        try:
+            parser.read(GCLOUD / "configurations" / f"config_{config}")
+        except (configparser.Error, OSError):
+            continue
+        account = parser.get("core", "account", fallback="")
+        if account:
+            return account
+    return None
+
+
+def credential(account: str) -> dict | None:
+    """The stored credential, read without disturbing a gcloud that is writing."""
+    database = GCLOUD / "credentials.db"
+    if not database.exists():
+        return None
+    try:
+        connection = sqlite3.connect(
+            f"{database.as_uri()}?mode=ro", uri=True, timeout=1
+        )
+        try:
+            row = connection.execute(
+                "select value from credentials where account_id = ?", (account,)
+            ).fetchone()
+        finally:
+            connection.close()
+    except sqlite3.Error:
+        return None
+    try:
+        return json.loads(row[0]) if row else None
+    except (TypeError, ValueError):
+        return None
+
+
+def fingerprint(credentials: dict) -> str:
+    token = credentials.get("refresh_token") or ""
+    return hashlib.sha256(token.encode()).hexdigest()[:16] if token else ""
+
+
+def read_state() -> dict:
+    try:
+        state = json.loads(STATE.read_text())
+    except (OSError, ValueError):
+        return {}
+    return state if isinstance(state, dict) else {}
+
+
+def write_state(state: dict) -> None:
+    try:
+        STATE.parent.mkdir(parents=True, exist_ok=True)
+        scratch = STATE.with_name(STATE.name + ".tmp")
+        scratch.write_text(json.dumps(state))
+        scratch.chmod(0o600)
+        scratch.replace(STATE)
+    except OSError:
+        pass
+
+
+def stamp(day: str, log: str) -> float | None:
+    """Local epoch seconds for gcloud's YYYY.MM.DD/HH.MM.SS.ffffff.log naming."""
+    try:
+        year, month, date = (int(part) for part in day.split("."))
+        hour, minute, second = (int(part) for part in log.split(".")[:3])
+        return time.mktime((year, month, date, hour, minute, second, 0, 0, -1))
+    except (ValueError, OverflowError):
+        return None
+
+
+def minted_at(log: Path, started: float) -> float:
+    """When the login's token was actually minted, not when the command began.
+
+    The gap is the browser round trip, which can be minutes. Falling back to the
+    command's own start time only ever under-reports the time left.
+    """
+    try:
+        found = MINTED.search(log.read_text(errors="replace"))
+    except OSError:
+        return started
+    if not found:
+        return started
+    try:
+        lifetime, expiry = int(found.group(1)), float(found.group(2))
+    except ValueError:
+        return started
+    mint = expiry - lifetime
+    return mint if started <= mint <= started + 6 * 3600 else started
+
+
+def discover_login(floor: float, now: float) -> float | None:
+    """Newest `gcloud auth login` in gcloud's command log, searching backwards."""
+    logs = GCLOUD / "logs"
+    if not logs.is_dir():
+        return None
+    budget = BUDGET
+    try:
+        days = sorted((day for day in logs.iterdir() if day.is_dir()), reverse=True)
+    except OSError:
+        return None
+    for day in days:
+        try:
+            entries = sorted(
+                (log for log in day.iterdir() if log.name.endswith(".log")),
+                reverse=True,
+            )
+        except OSError:
+            continue
+        for entry in entries:
+            when = stamp(day.name, entry.name)
+            if when is None:
+                continue
+            if when < floor:
+                return None
+            if when > now + 60 or budget <= 0:
+                continue
+            budget -= 1
+            try:
+                with entry.open("rb") as handle:
+                    head = handle.read(4096).decode("utf-8", "replace")
+            except OSError:
+                continue
+            if LOGIN_MARKER in head:
+                return minted_at(entry, when)
+    return None
+
+
+def session_start(account: str, print_fingerprint: str, now: float) -> float:
+    state = read_state()
+    known = state.get("login_epoch")
+    if (
+        state.get("account") == account
+        and state.get("fingerprint") == print_fingerprint
+        and isinstance(known, (int, float))
+    ):
+        return float(known)
+    floor = now - LOOKBACK
+    if state.get("account") == account and isinstance(known, (int, float)):
+        floor = max(floor, known + 1)
+    login = discover_login(floor, now)
+    if login is None:
+        login = now
+    write_state(
+        {"account": account, "fingerprint": print_fingerprint, "login_epoch": login}
+    )
+    return login
+
+
+def render(left: float, plain: bool) -> str:
+    if left <= 0:
+        text, style = "gcloud EXPIRED", STYLES["alarm"]
+    else:
+        hours, minutes = divmod(-(-int(left) // 60), 60)
+        text = f"gcloud {hours}h{minutes:02d}m" if hours else f"gcloud {minutes}m"
+        style = (
+            STYLES["alarm"] if left < ALARM else STYLES["warn"] if left < WARN else ""
+        )
+    if plain:
+        return text
+    return f"#[{style}] {text} #[default] " if style else f"{text} "
+
+
+def main() -> int:
+    plain = "--plain" in sys.argv
+    verbose = "--verbose" in sys.argv
+    now = time.time()
+    account = active_account()
+    credentials = credential(account) if account else None
+    if not credentials or credentials.get("type") != "authorized_user":
+        return 0
+    print_fingerprint = fingerprint(credentials)
+    if not print_fingerprint:
+        return 0
+    login = session_start(account, print_fingerprint, now)
+    left = login + SESSION - now
+    if verbose:
+        when = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(login))
+        ends = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(login + SESSION))
+        print(f"account:    {account}")
+        print(f"logged in:  {when}")
+        print(f"expires:    {ends}  ({SESSION / 3600:g}h session)")
+        print(f"status:     {render(left, plain=True)}")
+        return 0
+    sys.stdout.write(render(left, plain))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
